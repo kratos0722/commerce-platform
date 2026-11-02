@@ -1,0 +1,21 @@
+# Java / Maven
+target/
+*.class
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+
+# Go
+/gateway/gateway
+/gateway/bin/
+
+# OS / editors
+.DS_Store
+.vscode/
+.idea/
+*.iml
