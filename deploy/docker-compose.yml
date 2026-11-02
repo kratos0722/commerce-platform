@@ -1,0 +1,33 @@
+# Runs the whole platform locally. The gateway fronts catalog + orders;
+# orders calls catalog over the internal network to validate and price items.
+services:
+  catalog:
+    build: ../services/catalog
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  orders:
+    build: ../services/orders
+    environment:
+      CATALOG_URL: http://catalog:8080
+    ports:
+      - "8000:8000"
+    depends_on:
+      catalog:
+        condition: service_healthy
+
+  gateway:
+    build: ../gateway
+    environment:
+      CATALOG_URL: http://catalog:8080
+      ORDERS_URL: http://orders:8000
+    ports:
+      - "8090:8090"
+    depends_on:
+      - catalog
+      - orders
